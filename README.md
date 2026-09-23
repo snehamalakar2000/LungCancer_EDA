@@ -53,13 +53,10 @@ The test suite includes checks for data loading, missing columns, preprocessing,
 
 The GitHub Actions workflow runs the full test suite whenever code is pushed or a pull request is opened. A successful run confirms that all automated tests pass in a clean Python environment.
 
-Before submitting, replace `USERNAME/REPOSITORY` in the badge above with your GitHub username and repository name. Then add a screenshot of the successful test run below.
-
 ## Test results
 
-Add your screenshot here after GitHub Actions passes:
+The screenshot below shows all seven unit and system tests passing successfully through GitHub Actions.
 
-```markdown
-![Successful test run](images/tests-passed.png)
-```
+![Successful GitHub Actions test run](images/test_passed.png)
+
 
