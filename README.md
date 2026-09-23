@@ -1,38 +1,65 @@
-# Lung Cancer EDA and Machine Learning
+# Lung Cancer EDA and Survival Prediction
 
-## Overview
+[![Python tests](https://github.com/snehamalakar2000/LungCancer_EDA/actions/workflows/tests.yml/badge.svg)](https://github.com/snehamalakar2000/LungCancer_EDA/actions/workflows/tests.yml)
 
-In this project, I explored a lung cancer patient dataset using pandas and Matplotlib, then tested a simple logistic regression model to predict survival.
+This project explores a lung cancer dataset and trains a logistic regression model to predict whether a patient survived. It also includes automated unit and system tests so the analysis is reproducible and reliable.
 
-## Data Inspection
+## Project structure
 
-I used `head()`, `info()`, and `describe()` to get familiar with the dataset. I also checked for duplicates and unique patient IDs.
+```text
+.
+├── .github/workflows/tests.yml  # Runs tests automatically on GitHub
+├── src/analysis.py              # Reusable analysis functions
+├── tests/test_analysis.py       # Unit tests
+├── tests/test_system.py         # End-to-end system test
+├── EDA.ipynb            # Exploratory analysis and model
+├── lung_cancer_dataset.csv      # Dataset (add this file locally)
+└── requirements.txt             # Python dependencies
+```
 
-## EDA
+## Analysis
 
-I converted the `Survived` column into a numeric variable so I could calculate survival rates.
+The notebook:
 
-When I grouped patients by cancer stage, I found a clear pattern:
+1. Loads and inspects the data.
+2. Converts survival and cancer-stage labels to numeric values.
+3. Compares survival rates across cancer stages.
+4. Examines smoking status for Stage I and Stage IV patients.
+5. Measures the relationship between tumor size and survival time.
+6. Trains and evaluates a logistic regression model using cancer stage, tumor size, and age.
 
-- Stage I: ~69.8% survival
-- Stage II: ~50.7%
-- Stage III: ~17.4%
-- Stage IV: ~5.5%
+## Run the project
 
-I then filtered the data to compare Stage I and Stage IV patients and looked at smoking status. Stage IV had a higher share of current smokers, while Stage I had more patients who had never smoked.
+Place `lung_cancer_dataset.csv` in the project root. Then install the dependencies and open the notebook:
 
-I also created a scatter plot of tumor size vs. survival months. The plot showed a negative relationship, with larger tumors generally associated with shorter survival times.
+```bash
+pip install -r requirements.txt
+jupyter notebook EDA.ipynb
+```
 
-## Machine Learning
+Run all notebook cells from top to bottom.
 
-I used logistic regression to predict whether a patient survived. My first model used:
+## Run the tests
 
-- Cancer stage
-- Tumor size
-- Age
+From the project root, run:
 
-I split the data into training and test sets and trained the model on 80% of the data. The model achieved about **75% accuracy** on the test set.
+```bash
+pytest -v
+```
 
-## Main Takeaways
+The test suite includes checks for data loading, missing columns, preprocessing, stage summaries, filtering, model training, and the complete analysis workflow.
 
-Cancer stage showed the strongest survival pattern in my EDA. Tumor size also appeared to have a negative relationship with survival time. The logistic regression model gave me a basic starting point for predicting survival using patient characteristics.
+## Continuous integration
+
+The GitHub Actions workflow runs the full test suite whenever code is pushed or a pull request is opened. A successful run confirms that all automated tests pass in a clean Python environment.
+
+Before submitting, replace `USERNAME/REPOSITORY` in the badge above with your GitHub username and repository name. Then add a screenshot of the successful test run below.
+
+## Test results
+
+Add your screenshot here after GitHub Actions passes:
+
+```markdown
+![Successful test run](images/tests-passed.png)
+```
+
