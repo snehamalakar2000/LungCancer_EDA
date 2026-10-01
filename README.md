@@ -30,14 +30,31 @@ The notebook:
 
 ## Run the project
 
-The dataset is included in the project root. Install the dependencies and open the notebook:
+Use Python 3.12. The dataset is included in the repository.
+
+Clone the repository and enter its folder:
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/snehamalakar2000/LungCancer_EDA.git
+cd LungCancer_EDA
+```
+
+Create and activate a virtual environment on macOS/Linux:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install dependencies and open the notebook:
+
+```bash
+python -m pip install -r requirements.txt
 jupyter notebook EDA.ipynb
 ```
 
-Run all notebook cells from top to bottom.
+Select the virtual environment's Python kernel if prompted, then run all
+notebook cells from top to bottom.
 
 ## Run the tests
 
@@ -85,12 +102,11 @@ The CSV loader calls this function instead of containing its own checks.
 ## Earlier test results
 
 The screenshot below shows the original seven unit and system tests passing
-through GitHub Actions. The expanded suite should be confirmed in a new run
-after these changes are pushed.
+through GitHub Actions. 
 
 ![Successful GitHub Actions test run](images/test_passed.png)
 
-### Data Quality and Outlier Treatment
+## Data Quality and Outlier Treatment
 
 The dataset contains 2,000 records with no missing values or duplicate
 rows, so no imputation or duplicate removal was needed.
