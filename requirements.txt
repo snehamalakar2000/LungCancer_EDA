@@ -3,4 +3,6 @@ matplotlib
 scikit-learn
 jupyter
 pytest
+black
+flake8
 

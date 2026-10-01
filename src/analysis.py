@@ -82,9 +82,7 @@ def calculate_stage_survival(df):
     """Return survival percentage and patient count for each cancer stage."""
     summary = df.groupby("Cancer_Stage")["Survived_num"].agg(["mean", "count"])
     summary["mean"] = summary["mean"] * 100
-    return summary.rename(
-        columns={"mean": "Survival_Rate", "count": "Patient_Count"}
-    )
+    return summary.rename(columns={"mean": "Survival_Rate", "count": "Patient_Count"})
 
 
 def filter_stages(df, stages=("Stage I", "Stage IV")):

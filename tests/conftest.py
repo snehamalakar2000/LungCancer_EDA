@@ -23,4 +23,3 @@ def sample_data():
         )
 
     return pd.DataFrame(rows)
-

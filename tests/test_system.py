@@ -11,4 +11,3 @@ def test_complete_analysis_workflow(tmp_path, sample_data):
     assert len(results["data"]) == len(sample_data)
     assert results["stage_summary"]["Patient_Count"].sum() == len(sample_data)
     assert 0 <= results["accuracy"] <= 1
-
