@@ -90,6 +90,41 @@ after these changes are pushed.
 
 ![Successful GitHub Actions test run](images/test_passed.png)
 
+### Data Quality and Outlier Treatment
+
+The dataset contains 2,000 records with no missing values or duplicate
+rows, so no imputation or duplicate removal was needed.
+
+Using the 1.5 × IQR rule, I flagged 4 potential outliers in age,
+8 in tumor size, and 4 in survival duration. These are counts per column
+and may include overlapping records.
+
+I retained these observations because being statistically unusual does
+not establish that a value is incorrect. Removing them without evidence
+could exclude meaningful variation. This check does not confirm the
+dataset's clinical validity.
+
+## Key Findings
+
+- The percentage of records labeled as surviving decreased across cancer
+  stages: 69.84% in Stage I, 50.72% in Stage II, 17.39% in Stage III,
+  and 5.46% in Stage IV.
+- The classification model achieved 72% test accuracy, compared with
+  62.25% for a baseline that always predicts the most common training
+  outcome.
+- The model improved accuracy by 9.75 percentage points. This shows why
+  comparing a model against a simple baseline is more informative than
+  reporting accuracy alone.
+
+These findings describe this dataset and do not establish causation.
+The model is exploratory and is not intended for clinical use.
+
+## Analysis Improvement
+
+I added a baseline comparison to check whether the model performs better
+than always predicting the most common outcome. Both models use the same
+training and test split so their accuracy can be compared fairly.
+
 ## Docker
 
 Install and start Docker Desktop, then run these commands from the project folder.
