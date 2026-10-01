@@ -90,3 +90,38 @@ after these changes are pushed.
 
 ![Successful GitHub Actions test run](images/test_passed.png)
 
+## Docker
+
+Install and start Docker Desktop, then run these commands from the project folder.
+
+Build the image:
+
+```bash
+docker build -t lung-cancer-eda .
+```
+
+Run the analysis:
+
+```bash
+docker run --rm lung-cancer-eda
+```
+
+The container prints survival rates by cancer stage and model accuracy, then exits.
+
+Run the tests inside the container:
+
+```bash
+docker run --rm lung-cancer-eda python -m pytest -v
+```
+
+All 19 tests passed inside the container.
+
+Docker packages the project with its Python environment and dependencies so it can run consistently across machines.
+
+### Successful build
+
+<img src="images/docker_build.png" alt="Successful Docker image build" width="700">
+
+### Analysis output
+
+<img src="images/docker_run.png" alt="Analysis running successfully inside Docker" width="700">
