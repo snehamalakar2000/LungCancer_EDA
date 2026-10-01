@@ -67,3 +67,57 @@ def test_model_training_returns_valid_results(sample_data):
     assert len(predictions) == len(X_test)
     assert 0 <= accuracy <= 1
 
+
+def test_load_data_rejects_missing_file(tmp_path):
+    with pytest.raises(FileNotFoundError, match="Dataset not found"):
+        load_data(tmp_path / "missing.csv")
+
+
+def test_load_data_rejects_empty_dataset(tmp_path, sample_data):
+    file_path = tmp_path / "empty.csv"
+    sample_data.iloc[:0].to_csv(file_path, index=False)
+    with pytest.raises(ValueError, match="Dataset is empty"):
+        load_data(file_path)
+
+
+@pytest.mark.parametrize("column", ["Age", "Survived", "Cancer_Stage"])
+def test_preprocess_rejects_missing_values(sample_data, column):
+    invalid = sample_data.copy()
+    invalid[column] = invalid[column].astype(object)
+    invalid.loc[0, column] = None
+    with pytest.raises(ValueError, match="Missing values"):
+        preprocess_data(invalid)
+
+
+@pytest.mark.parametrize(
+    "column,value",
+    [("Survived", "Maybe"), ("Cancer_Stage", "Stage V")],
+)
+def test_preprocess_rejects_unknown_labels(sample_data, column, value):
+    invalid = sample_data.copy()
+    invalid.loc[0, column] = value
+    with pytest.raises(ValueError, match="unexpected value"):
+        preprocess_data(invalid)
+
+
+@pytest.mark.parametrize("value", ["unknown", float("inf"), -1])
+def test_preprocess_rejects_invalid_tumor_size(sample_data, value):
+    invalid = sample_data.copy()
+    invalid["Tumor_Size_cm"] = invalid["Tumor_Size_cm"].astype(object)
+    invalid.loc[0, "Tumor_Size_cm"] = value
+    with pytest.raises(ValueError, match="Tumor_Size_cm"):
+        preprocess_data(invalid)
+
+
+def test_stage_survival_with_known_answer(sample_data):
+    """Two patients with one survivor must produce exactly 50% survival."""
+    small = sample_data.iloc[:2].copy()
+    small["Cancer_Stage"] = "Stage I"
+    small["Survived"] = ["Yes", "No"]
+    summary = calculate_stage_survival(preprocess_data(small))
+    assert summary.loc["Stage I", "Survival_Rate"] == 50
+    assert summary.loc["Stage I", "Patient_Count"] == 2
+
+
+def test_filter_with_no_matching_stage(sample_data):
+    assert filter_stages(sample_data, stages=("Stage V",)).empty

@@ -1,6 +1,7 @@
 """Core data-processing and modeling functions used by the notebook."""
 
 from pathlib import Path
+from math import isfinite
 
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
@@ -26,27 +27,54 @@ STAGE_MAP = {
 }
 
 
+def validate_data(df):
+    """Reject incomplete or invalid analysis inputs without changing the data."""
+    missing = REQUIRED_COLUMNS - set(df.columns)
+    if missing:
+        raise ValueError(f"Dataset is missing columns: {sorted(missing)}")
+    if df.empty:
+        raise ValueError("Dataset is empty.")
+
+    missing_values = df[sorted(REQUIRED_COLUMNS)].isna().any()
+    if missing_values.any():
+        columns = missing_values[missing_values].index.tolist()
+        raise ValueError(f"Missing values in required columns: {columns}")
+
+    for column, allowed in {
+        "Survived": {"Yes", "No"},
+        "Cancer_Stage": set(STAGE_MAP),
+    }.items():
+        if not df[column].isin(allowed).all():
+            raise ValueError(f"{column} contains an unexpected value.")
+
+    for column in ("Age", "Tumor_Size_cm", "Survival_Months"):
+        values = pd.to_numeric(df[column], errors="coerce")
+        if not values.map(isfinite).all():
+            raise ValueError(f"{column} must contain finite numeric values.")
+        if (values < 0).any():
+            raise ValueError(f"{column} must not contain negative values.")
+
+
 def load_data(file_path):
-    """Load the CSV file and confirm that the analysis columns exist."""
+    """Load the CSV file and validate the analysis inputs."""
     file_path = Path(file_path)
     if not file_path.exists():
         raise FileNotFoundError(f"Dataset not found: {file_path}")
 
     df = pd.read_csv(file_path)
-    missing = REQUIRED_COLUMNS - set(df.columns)
-    if missing:
-        raise ValueError(f"Dataset is missing columns: {sorted(missing)}")
+    validate_data(df)
     return df
 
 
 def preprocess_data(df):
     """Create numeric survival and cancer-stage columns for analysis."""
+    validate_data(df)
     processed = df.copy()
+    for column in ("Age", "Tumor_Size_cm", "Survival_Months"):
+        processed[column] = pd.to_numeric(processed[column])
     processed["Survived_num"] = processed["Survived"].map({"Yes": 1, "No": 0})
     processed["Stage_num"] = processed["Cancer_Stage"].map(STAGE_MAP)
 
-    if processed[["Survived_num", "Stage_num"]].isna().any().any():
-        raise ValueError("Survived or Cancer_Stage contains an unexpected value.")
     return processed
 
 
@@ -104,4 +132,3 @@ def run_analysis(file_path):
         "model": model_results[0],
         "accuracy": model_results[2],
     }
-

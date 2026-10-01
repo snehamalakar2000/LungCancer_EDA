@@ -13,7 +13,7 @@ This project explores a lung cancer dataset and trains a logistic regression mod
 ├── tests/test_analysis.py       # Unit tests
 ├── tests/test_system.py         # End-to-end system test
 ├── EDA.ipynb            # Exploratory analysis and model
-├── lung_cancer_dataset.csv      # Dataset (add this file locally)
+├── lung_cancer_dataset.csv      # Dataset included in the repository
 └── requirements.txt             # Python dependencies
 ```
 
@@ -30,7 +30,7 @@ The notebook:
 
 ## Run the project
 
-Place `lung_cancer_dataset.csv` in the project root. Then install the dependencies and open the notebook:
+The dataset is included in the project root. Install the dependencies and open the notebook:
 
 ```bash
 pip install -r requirements.txt
@@ -53,10 +53,30 @@ The test suite includes checks for data loading, missing columns, preprocessing,
 
 The GitHub Actions workflow runs the full test suite whenever code is pushed or a pull request is opened. A successful run confirms that all automated tests pass in a clean Python environment.
 
-## Test results
+## Refactoring and data validation
 
-The screenshot below shows all seven unit and system tests passing successfully through GitHub Actions.
+I extracted the input checks into `validate_data()` so CSV loading and
+preprocessing use the same rules. This keeps validation separate from label
+conversion and makes errors easier to understand.
+
+The analysis rejects empty datasets, missing required columns or values,
+unrecognized survival/stage labels, and nonnumeric, infinite, or negative values
+in age, tumor size, and survival months. Missing values in required columns are
+reported rather than silently dropped or filled. Missing values in other
+columns are not handled by these checks. Numeric strings are converted during
+preprocessing. These checks do not remove statistical outliers.
+
+The tests cover invalid inputs, filtering with no matches, and a known-answer
+example where one survivor among two patients must give 50% survival.
+
+Verification: run `python -m pytest -v` and rerun the analysis on the included
+CSV. Add a screenshot of the GitHub commit diff here after committing this change.
+
+## Earlier test results
+
+The screenshot below shows the original seven unit and system tests passing
+through GitHub Actions. The expanded suite should be confirmed in a new run
+after these changes are pushed.
 
 ![Successful GitHub Actions test run](images/test_passed.png)
-
 
