@@ -70,7 +70,17 @@ The tests cover invalid inputs, filtering with no matches, and a known-answer
 example where one survivor among two patients must give 50% survival.
 
 Verification: run `python -m pytest -v` and rerun the analysis on the included
-CSV. Add a screenshot of the GitHub commit diff here after committing this change.
+CSV. 
+
+### Refactoring screenshots
+
+The validation checks now live in a reusable function.
+
+<img src="images/refactoring_validation.png" alt="New validation function" width="700">
+
+The CSV loader calls this function instead of containing its own checks.
+
+<img src="images/refactoring_diff.png" alt="Before and after refactoring the CSV loader" width="700">
 
 ## Earlier test results
 
